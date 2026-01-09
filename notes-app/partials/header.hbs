@@ -1,0 +1,29 @@
+<header class="w-full">
+
+  <nav class="flex items-center justify-between bg-gray-800 text-white p-3">
+    <a class="p-2 hover:text-gray-300" href="/">
+      <i data-feather="home"></i>
+    </a>
+    <span class="text-sm pl-2 text-gray-500">{{title}}</span>
+
+    <button class="md:hidden p-2 border border-gray-600 rounded">
+      <i data-feather="menu"></i>
+    </button>
+
+    <div class="hidden md:flex w-full items-center">
+      <div class="flex-1 px-4 text-gray-300">
+        {{#if breadcrumb}}
+          <a
+            class="hover:underline hover:text-white"
+            href="{{breadcrumb.url}}"
+          >{{breadcrumb.title}}</a>
+        {{/if}}
+      </div>
+      <a
+        class="bg-gray-100 text-gray-800 hover:bg-white px-4 py-2 rounded font-medium transition-colors"
+        href="/notes/add"
+      >ADD Note</a>
+    </div>
+  </nav>
+
+</header>

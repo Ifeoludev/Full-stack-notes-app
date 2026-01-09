@@ -1,0 +1,10 @@
+{{#each notelist}}
+  <div class="text-center rounded border p-4 block text-xl font-bold">
+    {{!-- {{key}}: --}}
+    <a
+      class="text-gray-900 block w-full"
+      href="/notes/view?key={{key}}"
+    >{{title}}</a>
+
+  </div>
+{{/each}}

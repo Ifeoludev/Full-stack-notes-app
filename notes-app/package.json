@@ -1,0 +1,45 @@
+{
+  "name": "notes-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "cross-env DEBUG=notes-app:* node ./bin/www.mjs",
+    "start-fs": "cross-env DEBUG=notes:* NOTES_MODEL=fs node ./bin/www.mjs",
+    "start-level": "cross-env DEBUG=notes:* NOTES_MODEL=level node ./bin/www.mjs",
+    "sqlite3-setup": "node ./scripts/init-sqlite3.mjs",
+    "start-sqlite3": "cross-env DEBUG=notes:* NOTES_MODEL=sqlite3 node ./bin/www.mjs",
+    "start-sequelize": "cross-env NOTES_MODEL=sequelize node ./bin/www.mjs",
+    "start-mongodb": "cross-env NOTES_MODEL=mongodb node ./bin/www.mjs",
+    "server1": "set DEBUG=notes-app:* & set NOTES_PORT=3001 & node ./bin/www.mjs",
+    "server2": "set DEBUG=notes-app:* & set NOTES_PORT=3002 & node ./bin/www.mjs",
+    "tailwind": "npx @tailwindcss/cli -i ./public/stylesheets/input.css -o ./public/stylesheets/style.css --watch"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1",
+    "express-session": "^1.18.2",
+    "feather-icons": "^4.29.2",
+    "fs-extra": "^11.3.2",
+    "hbs": "^4.2.0",
+    "http-errors": "~1.6.3",
+    "js-yaml": "^4.1.1",
+    "level": "^10.0.0",
+    "mongodb": "^7.0.0",
+    "morgan": "^1.10.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "rotating-file-stream": "^3.2.7",
+    "sequelize": "^6.37.7",
+    "session-file-store": "^1.5.0",
+    "sqlite3": "^5.1.7",
+    "superagent": "^10.2.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.22",
+    "cross-env": "^10.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  }
+}
