@@ -4,11 +4,11 @@ const notebody = Symbol("body");
 
 export default class Note {
   constructor(key, title, body) {
+    if (!key) throw new Error("missing key");
+    if (!title) throw new Error("missing title");
     this[notekey] = key;
     this[notetitle] = title;
     this[notebody] = body;
-    if (!key) throw new Error("Key is missing");
-    if (!title) throw new Error("Title is missing");
   }
   get key() {
     return this[notekey];

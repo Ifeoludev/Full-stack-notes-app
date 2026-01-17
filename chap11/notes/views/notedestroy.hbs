@@ -1,0 +1,16 @@
+<div class="container-fluid">
+    {{#if user}}
+        <form method='POST' action='/notes/destroy/confirm'>
+            <input type='hidden' name='notekey' value='{{#if note}}{{notekey}}{{/if}}'>
+            <p class="m-1">Delete {{note.title}}?</p>
+            <br/>
+            <div class="border inline-flex rounded m-1">
+                <input class="px-4 py-2 border-r cursor-pointer bg-red-100 hover:bg-red-200 text-red-800" type='submit' value='DELETE' />
+                <a class="px-4 py-2 hover:bg-gray-100" href="/notes/view?key={{#if note}}{{notekey}}{{/if}}">Cancel</a>
+            </div>
+        </form>
+    {{else}}
+        {{> not-logged-in }}
+    {{/if}}
+</div>
+{{> footerjs}}

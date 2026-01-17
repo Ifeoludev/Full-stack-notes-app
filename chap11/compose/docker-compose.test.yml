@@ -1,0 +1,57 @@
+version: "3"
+services:
+  db-test:
+    image: mysql/mysql-server:5.7
+    container_name: db-test
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_USER: notes
+      MYSQL_PASSWORD: notes12345
+      MYSQL_DATABASE: notes
+    tmpfs:
+      - /var/lib/mysql
+    networks:
+      - test-net
+
+  notes-test:
+    build: ../notes
+    container_name: notes-test
+    depends_on:
+      - db-test
+    environment:
+      NOTES_MODEL: sequelize
+      SEQUELIZE_CONNECT: models/sequelize-test.yaml
+      NOTES_DB_HOST: db-test
+      USER_SERVICE_URL: http://userauth:3333
+    command: npm test
+    networks:
+      - test-net
+
+  db-userauth:
+    image: mysql/mysql-server:5.7
+    container_name: db-userauth
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_USER: userauth
+      MYSQL_PASSWORD: userauth
+      MYSQL_DATABASE: userauth
+    tmpfs:
+      - /var/lib/mysql
+    networks:
+      - test-net
+
+  userauth:
+    build: ../users
+    container_name: userauth
+    depends_on:
+      - db-userauth
+    environment:
+      PORT: 3333
+      SEQUELIZE_CONNECT: sequelize-docker-mysql.yaml
+    restart: always
+    networks:
+      - test-net
+
+networks:
+  test-net:
+    driver: bridge
