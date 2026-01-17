@@ -6,11 +6,14 @@
     </a>
     <span class="text-sm pl-2 text-gray-500">{{title}}</span>
 
-    <button class="md:hidden p-2 border border-gray-600 rounded">
+    <button
+      id="nav-toggle"
+      class="md:hidden p-2 border border-gray-600 rounded"
+    >
       <i data-feather="menu"></i>
     </button>
 
-    <div class="hidden md:flex w-full items-center">
+    <div id="nav-content" class="hidden md:flex w-full items-center">
       <div class="flex-1 px-4 text-gray-300">
         {{#if breadcrumb}}
           <a
