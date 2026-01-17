@@ -65,8 +65,11 @@ router.post("/signup", async (req, res, next) => {
     );
     res.redirect("/users/login");
   } catch (e) {
-    res.redirect("/users/signup");
-    next(e);
+    res.render("signup", {
+      title: "Sign Up",
+      user: req.user,
+      message: e.message || "Error creating account",
+    });
   }
 });
 
