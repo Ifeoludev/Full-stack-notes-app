@@ -1,11 +1,11 @@
-  <div class="flex min-h-[50vh]">
-    <div class="w-fit mt-20 ml-56">
+  <div class="flex min-h-[50vh] justify-center w-full">
+    <div class="w-full max-w-sm mt-20 px-4">
       <h2 class="text-2xl font-bold mb-8 text-center text-gray-800">Login to Notes</h2>
-      <form method="POST" action="/users/login">
+      <form method="POST" action="/users/login" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username:</label>
           <input
-            class="w-64 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             name="username"
             id="username"
@@ -14,10 +14,10 @@
             required
           />
         </div>
-        <div class="mb-4">
+        <div class="mb-6">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password:</label>
           <input
-            class="w-64 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             type="password"
             name="password"
             id="password"
@@ -26,17 +26,17 @@
             required
           />
         </div>
-        <div class="mt-8">
+        <div class="flex items-center justify-between">
           <button
-            class="block w-64 bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded mt-2 transition-colors"
+            class="bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-colors"
             type="submit"
           >
             Submit
           </button>
         </div>
         <div class="mt-4 text-center">
-            <p>Or</p>
-            <a href="/users/auth/github" class="block w-64 bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded mt-2 transition-colors">Sign in with GitHub</a>
+            <p class="text-gray-600 text-sm mb-2">Or</p>
+            <a href="/users/auth/github" class="block w-full bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors text-center">Sign in with GitHub</a>
         </div>
       </form>
     </div>
