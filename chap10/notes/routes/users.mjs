@@ -43,12 +43,39 @@ router.get("/login", function (req, res, next) {
   }
 });
 
+router.get("/signup", function (req, res, next) {
+  try {
+    res.render("signup", { title: "Sign Up", user: req.user });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post("/signup", async (req, res, next) => {
+  try {
+    var result = await usersModel.create(
+      req.body.username,
+      req.body.password,
+      "local", // provider
+      req.body.familyName,
+      req.body.givenName,
+      req.body.middleName,
+      [req.body.email], // emails array
+      [], // photos array
+    );
+    res.redirect("/users/login");
+  } catch (e) {
+    res.redirect("/users/signup");
+    next(e);
+  }
+});
+
 router.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/", // SUCCESS: Go to home page
     failureRedirect: "login", // FAIL: Go to userlogin
-  })
+  }),
 );
 
 router.get("/auth/github", passport.authenticate("github"));
@@ -58,7 +85,7 @@ router.get(
   passport.authenticate("github", { failureRedirect: "/users/login" }),
   function (req, res) {
     res.redirect("/");
-  }
+  },
 );
 
 router.get("/logout", function (req, res, next) {
@@ -90,7 +117,7 @@ passport.use(
     } catch (e) {
       done(e);
     }
-  })
+  }),
 );
 
 passport.use(
@@ -119,8 +146,8 @@ passport.use(
       } catch (err) {
         done(err);
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser(function (user, done) {
