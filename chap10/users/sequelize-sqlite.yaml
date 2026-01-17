@@ -1,0 +1,9 @@
+dbname: database
+username: username
+password: password
+params:
+  dialect: sqlite
+  storage: users-sqlite3.sqlite
+  logging: false
+  define:
+    underscored: true

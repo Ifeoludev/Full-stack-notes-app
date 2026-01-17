@@ -1,9 +1,11 @@
 node_modules/
+*.log
+*.sqlite
 .env
 .DS_Store
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-sessions/
-public/stylesheets/style.css
+npm-debug.log
+# Ignore local Docker configuration / volumes if they exist
+chap10/compose/volumes/
+# Ignore compiled CSS if it's generated (keep it if you want to deploy without build step, but generally ignore)
+# public/stylesheets/style.css 
+# (Actually, let's keep style.css for now as we might not run build on server if it's a simple deploy)

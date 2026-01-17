@@ -96,3 +96,16 @@ The project is split into two main components:
 5.  **Access the App**:
     Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## 📂 Project Structure
+
+```
+├── notes-app/            # Main Notes Application
+│   ├── bin/              # Server entry point
+│   ├── models/           # Database adapters (Mongo, SQLite, etc.)
+│   ├── public/           # Static assets (CSS, JS)
+│   ├── routes/           # Express routes
+│   └── views/            # Handlebars templates
+└── users/                # User Authentication Microservice
+    ├── user-server.mjs   # Service entry point
+    └── users-*.mjs       # User models and logic
+```
