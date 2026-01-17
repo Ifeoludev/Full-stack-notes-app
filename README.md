@@ -99,7 +99,6 @@ The project is split into two main components:
 ## 📂 Project Structure
 
 ```
-├── .env                  # Environment variables
 ├── notes-app/            # Main Notes Application
 │   ├── bin/              # Server entry point
 │   ├── models/           # Database adapters (Mongo, SQLite, etc.)

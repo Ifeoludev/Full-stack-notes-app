@@ -1,29 +1,70 @@
 import fs from "fs-extra";
 import { fileURLToPath } from "url";
+import path from "path";
+import dotenv from "dotenv";
+
+// Workaround for lack of __dirname in ES6 modules
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Configure dotenv before other imports
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+if (process.env.SEQUELIZE_CONNECT_NOTES) {
+  process.env.SEQUELIZE_CONNECT = process.env.SEQUELIZE_CONNECT_NOTES;
+}
+
 import express from "express";
 import hbs from "hbs";
-import path from "path";
 import util from "util";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import DBG from "debug";
 const debug = DBG("notes:debug");
 const error = DBG("notes:error");
-import { router as index } from "./routes/index.mjs";
-import { router as notes } from "./routes/notes.mjs";
-import * as rfs from "rotating-file-stream";
+
+import { router as index, socketio as indexSocketio } from "./routes/index.mjs";
+import { router as notes, socketio as notesSocketio } from "./routes/notes.mjs";
+import { router as usersRouter, initPassport } from "./routes/users.mjs";
+
+import { createStream } from "rotating-file-stream";
 import createError from "http-errors";
 import session from "express-session";
 import sessionFileStore from "session-file-store";
-const FileStore = sessionFileStore(session);
-import { router as usersRouter, initPassport } from "./routes/users.mjs";
 
-export const sessionCookieName = "notescookie.sid";
-
-// Workaround for lack of __dirname in ES6 modules
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import http from "http";
+import { Server } from "socket.io";
+import passportSocketIo from "passport.socketio";
 
 const app = express();
+export default app;
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+const FileStore = sessionFileStore(session);
+export const sessionCookieName = "notescookie.sid";
+const sessionSecret = "keyboard mouse";
+const sessionStore = new FileStore({ path: "sessions" });
+
+io.use(
+  passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key: sessionCookieName,
+    secret: sessionSecret,
+    store: sessionStore,
+    success: onAuthorizeSuccess,
+    fail: onAuthorizeFail,
+  })
+);
+
+function onAuthorizeSuccess(data, accept) {
+  accept(null, true);
+}
+
+function onAuthorizeFail(data, message, error, accept) {
+  if (error) throw new Error(message);
+  accept(null, false);
+}
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -44,7 +85,7 @@ var logStream;
 if (process.env.REQUEST_LOG_FILE) {
   let logDirectory = path.dirname(process.env.REQUEST_LOG_FILE);
   fs.ensureDirSync(logDirectory);
-  logStream = rfs.createStream(process.env.REQUEST_LOG_FILE, {
+  logStream = createStream(process.env.REQUEST_LOG_FILE, {
     size: "10M",
     interval: "1d",
     compress: "gzip",
@@ -64,8 +105,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    store: new FileStore({ path: "sessions" }),
-    secret: "keyboard mouse",
+    store: sessionStore,
+    secret: sessionSecret,
     resave: true,
     saveUninitialized: true,
     name: sessionCookieName,
@@ -77,19 +118,11 @@ app.use("/", index);
 app.use("/notes", notes);
 app.use("/users", usersRouter);
 
+indexSocketio(io);
+notesSocketio(io);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  // Use http-errors manually or just create error object since we removed the require
-  // But wait, I missed http-errors in the import list from the user prompt!
-  // The user prompt LISTED specific imports. It did NOT list http-errors.
-  // "Change the block of require statements... to the following: ... import ..."
-  // It listed fs, url, express, hbs, path, util, favicon(unused?), logger, cookieParser, bodyParser(unused?), DBG.
-  // It missed http-errors which was line 1 of app.js.
-  // I should check if I need it.
-  // app.js line 1: const createError = require("http-errors");
-  // app.js line 48: next(createError(404));
-  // If I don't import it, line 48 will fail.
-  // I will add `import createError from 'http-errors';` to be safe, even if the textbook snippet missed it (or maybe they handle 404 differently).
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
@@ -106,4 +139,53 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-export default app;
+const port = normalizePort(process.env.PORT || "3000");
+app.set("port", port);
+
+server.listen(port);
+server.on("error", onError);
+server.on("listening", onListening);
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+function onError(error) {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  debug("Listening on " + bind);
+}
