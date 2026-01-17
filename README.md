@@ -2,7 +2,7 @@
 
 This project is a multi-service application built with Node.js and Express, demonstrating a microservices-like architecture for a robust Notes application with separate user authentication.
 
-## 🚀 Key Features
+##  Key Features
 
 - **Microservices Architecture**: Separate services for the Notes Application and User Authentication.
 - **Authentication**: Secure user login using **Passport.js** strategies.
@@ -10,7 +10,7 @@ This project is a multi-service application built with Node.js and Express, demo
 - **Modern JavaScript**: Built entirely using **ES6 Modules** (`.mjs`).
 - **Responsive UI**: Styled with **Tailwind CSS** and **Handlebars (hbs)** templates.
 
-## 🛠️ Tools & Technologies Used
+##  Tools & Technologies Used
 
 ### Backend
 
@@ -37,7 +37,7 @@ This project is a multi-service application built with Node.js and Express, demo
 - **Environment Variables**: `dotenv` for configuration management.
 - **Deployment**: Ready for deployment with `cross-env` scripts.
 
-## 📝 Implementation Details
+##  Implementation Details
 
 ### Architecture
 
@@ -53,7 +53,7 @@ The project is split into two main components:
 - **Flexible Data Layer**: The `NOTES_MODEL` environment variable allows hot-swapping the database backend (e.g., switching from Memory to MongoDB without changing application logic).
 - **Security**: Sensitive configuration (DB URLs, Secrets) is managed via a root `.env` file (not committed to version control).
 
-## ⚙️ Setup & Installation
+##  Setup & Installation
 
 1.  **Clone the repository**:
 
