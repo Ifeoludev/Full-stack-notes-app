@@ -1,7 +1,0 @@
-dbname: userauth
-username: userauth
-password: userauth
-params:
-  host: db-userauth
-  port: 3306
-  dialect: mysql
