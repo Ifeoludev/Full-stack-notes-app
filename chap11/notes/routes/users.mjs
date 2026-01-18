@@ -2,7 +2,10 @@ import path from "path";
 import util from "util";
 import express from "express";
 import passport from "passport";
+import passportLocal from "passport-local";
+
 import passportGitHub from "passport-github2";
+const LocalStrategy = passportLocal.Strategy;
 const GitHubStrategy = passportGitHub.Strategy;
 import dotenv from "dotenv";
 dotenv.config();
@@ -40,35 +43,13 @@ router.get("/login", function (req, res, next) {
   }
 });
 
-router.get("/signup", function (req, res, next) {
-  try {
-    res.render("signup", { title: "Sign Up", user: req.user });
-  } catch (e) {
-    next(e);
-  }
-});
-
-router.post("/signup", async (req, res, next) => {
-  try {
-    var result = await usersModel.create(
-      req.body.username,
-      req.body.password,
-      "local", // provider
-      req.body.familyName,
-      req.body.givenName,
-      req.body.middleName,
-      [req.body.email], // emails array
-      [], // photos array
-    );
-    res.redirect("/users/login");
-  } catch (e) {
-    res.render("signup", {
-      title: "Sign Up",
-      user: req.user,
-      message: e.message || "Error creating account",
-    });
-  }
-});
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/", // SUCCESS: Go to home page
+    failureRedirect: "login", // FAIL: Go to userlogin
+  })
+);
 
 router.get("/auth/github", passport.authenticate("github"));
 
@@ -77,7 +58,7 @@ router.get(
   passport.authenticate("github", { failureRedirect: "/users/login" }),
   function (req, res) {
     res.redirect("/");
-  },
+  }
 );
 
 router.get("/logout", function (req, res, next) {
@@ -94,6 +75,23 @@ router.get("/logout", function (req, res, next) {
     next(e);
   }
 });
+
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      //Calls User service to verify password
+      var check = await usersModel.userPasswordCheck(username, password);
+      //Return true/false to Passport
+      if (check.check) {
+        done(null, { id: check.username, username: check.username });
+      } else {
+        done(null, false, check.message);
+      }
+    } catch (e) {
+      done(e);
+    }
+  })
+);
 
 passport.use(
   new GitHubStrategy(
@@ -121,8 +119,8 @@ passport.use(
       } catch (err) {
         done(err);
       }
-    },
-  ),
+    }
+  )
 );
 
 passport.serializeUser(function (user, done) {

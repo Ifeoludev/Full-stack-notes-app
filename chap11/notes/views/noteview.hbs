@@ -1,0 +1,211 @@
+{{#if note}}<h3 id="notetitle" class="text-4xl font-bold mb-2 m-1">{{note.title}}</h3>{{/if}}
+{{#if note}}<p id="notebody" class="m-1">{{note.body}}</p>{{/if}}
+<p class="m-1">Key: {{notekey}}</p>
+{{#if notekey}}
+{{#if user}}
+  <div class="inline-flex border rounded m-1 cursor-pointer">
+    <a
+      class="px-4 py-2 hover:bg-gray-100 border-r"
+      href="/notes/destroy?key={{notekey}}"
+    >Delete</a>
+    <a
+      class="px-4 py-2 hover:bg-gray-100 border-r cursor-pointer"
+      href="/notes/edit?key={{notekey}}"
+    >Edit</a>
+    <button
+      id="btn-comment"
+      class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      type="button"
+    >Comment</button>
+  </div>
+{{/if}}
+{{/if}}
+
+{{#if user}}
+{{#if notekey}}
+<div id="noteMessages" class="m-4">
+    <!-- Messages will be inserted here by client-side JS -->
+</div>
+
+<!-- Modal Background -->
+<div id="notes-comment-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <!-- Modal Content -->
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Leave a Comment</h3>
+            <div class="mt-2 px-7 py-3">
+                <form id="submit-comment" method="POST" action="/notes/make-comment">
+                    <input type="hidden" name="from" value="{{ user.username }}">
+                    <input type="hidden" name="namespace" value="/view-{{notekey}}">
+                    <input type="hidden" name="key" value="{{notekey}}">
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="noteCommentTextArea">
+                            Your Excellent Thoughts, Please
+                        </label>
+                        <textarea id="noteCommentTextArea" name="message" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3"></textarea>
+                    </div>
+
+                    <div class="items-center px-4 py-3">
+                        <button id="submitNewComment" type="submit" class="px-4 py-2 bg-blue-500 text-white text-base cursor-pointer font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            Make Comment
+                        </button>
+                         <button id="close-modal" type="button" class="mt-3 px-4 py-2 bg-gray-100 cursor-pointer text-gray-700 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+{{/if}}
+
+{{> footerjs}}
+{{#if notekey}}
+<script src="/socket.io/socket.io.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Modal Logic (Tailwind)
+    const modal = document.getElementById('notes-comment-modal');
+    const openBtn = document.getElementById('btn-comment');
+    const closeBtn = document.getElementById('close-modal');
+    const msgContainer = document.getElementById('noteMessages');
+
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+    }
+
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+             modal.classList.add('hidden');
+        });
+    }
+
+    // 2. Helper: Format Message 
+    const formatMessage = (newmsg) => {
+        return `
+        <div id="notemessage-${newmsg.id}" class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 mb-3">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h5 class="font-bold text-gray-900">${newmsg.from}</h5>
+                    <p class="text-gray-700 mt-1">${newmsg.message}</p>
+                    <small class="text-gray-500 block mt-2">${new Date(newmsg.timestamp).toLocaleString()}</small>
+                </div>
+                <button type="button" 
+                    class="message-del-button px-3 py-1 bg-red-100 cursor-pointer text-red-600 rounded hover:bg-red-200 text-sm font-medium transition-colors"
+                    data-id="${newmsg.id}" 
+                    data-namespace="${newmsg.namespace}">
+                    Delete
+                </button>
+            </div>
+        </div>`;
+    };
+
+    // 3. Socket.IO Logic
+    var socket = io('/view');
+    
+    // A. Load History on Connect
+    socket.emit('getnotemessages', '/view-{{notekey}}', function(msgs) {
+        msgContainer.innerHTML = ''; // Clear existing
+        if (msgs && msgs.length > 0) {
+            msgs.forEach(msg => {
+                msgContainer.innerHTML = formatMessage(msg) + msgContainer.innerHTML;
+            });
+            msgContainer.style.display = 'block';
+        } else {
+            msgContainer.style.display = 'none';
+        }
+    });
+
+    // B. Listen for New Messages
+    socket.on('newmessage', function(newmsg) {
+        if (newmsg.namespace === '/view-{{notekey}}') {
+            msgContainer.insertAdjacentHTML('afterbegin', formatMessage(newmsg));
+            msgContainer.style.display = 'block';
+        }
+    });
+
+    // C. Listen for Deleted Messages
+    socket.on('destroymessage', function(data) {
+        if (data.namespace === '/view-{{notekey}}') {
+            const el = document.getElementById(`notemessage-${data.id}`);
+            if (el) el.remove();
+        }
+    });
+
+    // D. Listen for Note Updates
+    socket.on('noteupdate', function(note) {
+        if (note.key === "{{ notekey }}") {
+            var title = document.getElementById('notetitle');
+            if (title) title.textContent = note.title;
+            var body = document.getElementById('notebody');
+            if (body) body.textContent = note.body;
+        }
+    });
+
+    // E. Listen for Page Deletion
+    socket.on('notedestroy', function(data) {
+        if (data.key === "{{ notekey }}") {
+            window.location.href = "/";
+        }
+    });
+
+    // 4. Handle Form Submission or posting of message
+    const commentForm = document.getElementById('submit-comment');
+    if (commentForm) {
+        commentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new URLSearchParams(new FormData(commentForm));
+            
+            try {
+                const response = await fetch('/notes/make-comment', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    // Success: Clear text and hide modal
+                    document.getElementById('noteCommentTextArea').value = '';
+                    modal.classList.add('hidden');
+                } else {
+                    console.error("Failed to post comment");
+                    alert("Error posting comment.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Network error.");
+            }
+        });
+    }
+
+    // 5. Handle Delete Button Clicks 
+    if (msgContainer) {
+        msgContainer.addEventListener('click', async function(e) {
+            if (e.target && e.target.classList.contains('message-del-button')) {
+                e.preventDefault();
+                const id = e.target.getAttribute('data-id');
+                const namespace = e.target.getAttribute('data-namespace');
+                
+                try {
+                    await fetch('/notes/del-message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id, namespace })
+                    });
+                    // Note: We don't remove the element here manually.
+                    // We wait for the 'destroymessage' socket event to do it
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+    }
+});
+</script>
+{{/if}}
