@@ -1,0 +1,80 @@
+version: "3"
+services:
+  db-userauth:
+    image: "mysql/mysql-server:5.7"
+    container_name: db-userauth
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+        "--bind-address=0.0.0.0",
+      ]
+    expose:
+      - "3306"
+    networks:
+      - authnet
+    volumes:
+      - db-userauth-data:/var/lib/mysql
+      - ./docker/authnet/my.cnf:/etc/my.cnf
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_USER: userauth
+      MYSQL_PASSWORD: userauth
+      MYSQL_DATABASE: userauth
+    restart: always
+
+  userauth:
+    build: ./users-service
+    container_name: userauth
+    depends_on:
+      - db-userauth
+    networks:
+      - authnet
+      - frontnet
+    restart: always
+
+  db-notes:
+    image: "mysql/mysql-server:5.7"
+    container_name: db-notes
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+        "--bind-address=0.0.0.0",
+      ]
+    expose:
+      - "3306"
+    networks:
+      - frontnet
+    volumes:
+      - db-notes-data:/var/lib/mysql
+      - ./docker/frontnet/my.cnf:/etc/my.cnf
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_USER: notes
+      MYSQL_PASSWORD: notes12345
+      MYSQL_DATABASE: notes
+    restart: always
+
+  notes:
+    build: ./notes-app
+    container_name: notes
+    restart: always
+    depends_on:
+      - db-notes
+    networks:
+      - frontnet
+    ports:
+      - "3000:3000"
+
+networks:
+  frontnet:
+    driver: bridge
+  authnet:
+    driver: bridge
+
+volumes:
+  db-userauth-data:
+  db-notes-data:
