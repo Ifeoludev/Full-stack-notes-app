@@ -2,7 +2,8 @@
 
 This project is a full-stack multi-service application built with **Node.js** and **Express**, featuring a microservices-inspired architecture. It consists of a dedicated Notes Application and a separate User Authentication Service, demonstrating robust separation of concerns, secure authentication, and flexible database integration.
 
-**Live Demo:** [Hosted on Render](https://github.com/Ifeoludev/Full-stack-notes-app)
+**Live Demo:** https://full-stack-notes-frontend.onrender.com/
+
 
 ## Key Features
 
