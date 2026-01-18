@@ -7,7 +7,7 @@ This project is a full-stack multi-service application built with **Node.js** an
 ## Key Features
 
 - **Microservices Architecture**: Logical separation between the core application (`notes-app`) and the authentication provider (`users`), communicating via internal APIs.
-- **Robust Authentication**: Secure user authentication implementing **Passport.js** (Local Strategy) with session management.
+- **Unified Authentication**: Simplified, secure login exclusively using **GitHub OAuth** connectivity via Passport.js.
 - **Database Agnostic**: Built with a flexible model layer that can hot-swap between **MongoDB**, **SQLite**, **LevelDB**, or in-memory storage.
 - **Modern JavaScript**: Written entirely in **ES6 Modules** (`.mjs`) for a modern, standard-compliant codebase.
 - **Modern UI/UX**: Responsive interface styled with **Tailwind CSS** and using **Handlebars** for server-side rendering.
@@ -18,7 +18,7 @@ This project is a full-stack multi-service application built with **Node.js** an
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Auth**: Passport.js, express-session
+- **Auth**: Passport.js (GitHub Strategy), express-session
 - **Communication**: Superagent (REST client)
 - **Utilities**: fs-extra, debug, dotenv
 
@@ -63,8 +63,14 @@ This application is deployed on **Render** as a Web Service. The deployment take
    Create a `.env` file in the root directory with your credentials:
 
    ```env
+   # Database Configuration
    MONGO_URL=mongodb://localhost:27017/notes
    SESSION_SECRET=your_secret_key
+
+   # GitHub Auth Configuration
+   GITHUB_CLIENT_ID=your_github_client_id
+   GITHUB_CLIENT_SECRET=your_github_client_secret
+   GITHUB_CALLBACK_URL=http://localhost:3000/users/auth/github/callback
    ```
 
 3. **Start Services**
@@ -77,17 +83,3 @@ This application is deployed on **Render** as a Web Service. The deployment take
    # Terminal 2: Notes App
    cd notes-app && npm run start-mongodb
    ```
-
-## Project Structure
-
-```text
-├── notes-app/            # Main Application Logic
-│   ├── models/           # Database Adapters (Mongo, SQLite, Memory)
-│   ├── routes/           # Express Route Controllers
-│   ├── views/            # Handlebars Templates
-│   └── public/           # Static Assets
-│
-└── users/                # Authentication Service
-    ├── user-server.mjs   # Service Entry Point
-    └── models/           # User Data Models
-```
