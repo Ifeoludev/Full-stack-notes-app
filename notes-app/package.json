@@ -12,7 +12,8 @@
     "start-mongodb": "cross-env NOTES_MODEL=mongodb USER_SERVICE_URL=http://localhost:3333 node ./app.mjs",
     "server1": "set DEBUG=notes-app:* & set NOTES_PORT=3001 & set USER_SERVICE_URL=http://localhost:3333 & node ./app.mjs",
     "server2": "set DEBUG=notes-app:* & set NOTES_PORT=3002 & set USER_SERVICE_URL=http://localhost:3333 & node ./app.mjs",
-    "tailwind": "npx @tailwindcss/cli -i ./public/stylesheets/input.css -o ./public/stylesheets/style.css --watch"
+    "tailwind": "npx @tailwindcss/cli -i ./public/stylesheets/input.css -o ./public/stylesheets/style.css --watch",
+    "docker": "cross-env NOTES_MODEL=sequelize node ./app.mjs"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
