@@ -2,10 +2,7 @@ import path from "path";
 import util from "util";
 import express from "express";
 import passport from "passport";
-import passportLocal from "passport-local";
-
 import passportGitHub from "passport-github2";
-const LocalStrategy = passportLocal.Strategy;
 const GitHubStrategy = passportGitHub.Strategy;
 import dotenv from "dotenv";
 dotenv.config();
@@ -73,14 +70,6 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/", // SUCCESS: Go to home page
-    failureRedirect: "login", // FAIL: Go to userlogin
-  }),
-);
-
 router.get("/auth/github", passport.authenticate("github"));
 
 router.get(
@@ -105,23 +94,6 @@ router.get("/logout", function (req, res, next) {
     next(e);
   }
 });
-
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      //Calls User service to verify password
-      var check = await usersModel.userPasswordCheck(username, password);
-      //Return true/false to Passport
-      if (check.check) {
-        done(null, { id: check.username, username: check.username });
-      } else {
-        done(null, false, check.message);
-      }
-    } catch (e) {
-      done(e);
-    }
-  }),
-);
 
 passport.use(
   new GitHubStrategy(

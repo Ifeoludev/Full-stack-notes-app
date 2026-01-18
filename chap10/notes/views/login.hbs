@@ -1,48 +1,15 @@
   <div class="flex min-h-[50vh] justify-center w-full">
     <div class="w-full max-w-sm mt-20 px-4">
       <h2 class="text-2xl font-bold mb-8 text-center text-gray-800">Login to Notes</h2>
-      <form method="POST" action="/users/login" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username:</label>
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
-            value=""
-            required
-          />
-        </div>
-        <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password:</label>
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-            value=""
-            required
-          />
-        </div>
-        <div class="flex items-center justify-between">
-          <button
-            class="bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-colors"
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-        <div class="mt-4 text-center">
-            <p class="text-gray-600 text-sm mb-2">Or</p>
-            <a href="/users/auth/github" class="flex items-center justify-center w-full bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors text-center">
-              <i data-feather="github" class="mr-2"></i>
+      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <p class="text-gray-600 mb-6 text-center">Please sign in to continue.</p>
+        <div class="text-center">
+            <a href="/users/auth/github" class="flex items-center justify-center w-full bg-gray-800 hover:bg-black text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition-colors text-center text-lg">
+              <i data-feather="github" class="mr-3"></i>
               Sign in with GitHub
             </a>
-            <p class="mt-4 text-gray-600 text-sm">Don't have an account? <a href="/users/signup" class="text-blue-500 hover:text-blue-800 font-bold">Sign up</a></p>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
