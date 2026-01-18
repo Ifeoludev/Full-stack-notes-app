@@ -1,8 +1,0 @@
-dbname: database
-username: username
-password: password
-params:
-  dialect: sqlite
-  storage: messages.sqlite
-  define:
-    underscored: true
