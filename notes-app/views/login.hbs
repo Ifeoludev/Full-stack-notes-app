@@ -1,44 +1,14 @@
-  <div class="flex min-h-[50vh]">
-    <div class="w-fit mt-20 ml-56">
-      <h2 class="text-2xl font-bold mb-8 text-center text-gray-800">Login to Notes</h2>
-      <form method="POST" action="/users/login">
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username:</label>
-          <input
-            class="w-64 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
-            value=""
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password:</label>
-          <input
-            class="w-64 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-            value=""
-            required
-          />
-        </div>
-        <div class="mt-8">
-          <button
-            class="block w-64 bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded mt-2 transition-colors"
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-        <div class="mt-4 text-center">
-            <p>Or</p>
-            <a href="/users/auth/github" class="block w-64 bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded mt-2 transition-colors">Sign in with GitHub</a>
-        </div>
-      </form>
+<div class="flex items-center justify-center min-h-[calc(100vh-100px)] bg-gray-100 px-4">
+  <div class="w-full max-w-sm bg-white rounded-xl shadow-lg p-8">
+    <div class="text-center mb-8">
+      <p class="text-sm text-gray-500 mt-2">Sign in to access your notes</p>
+    </div>
+    
+    <div class="space-y-4">
+      <a href="/users/auth/github" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 transition-colors shadow-sm">
+        <i data-feather="github" class="mr-3 h-5 w-5"></i>
+        Sign in with GitHub
+      </a>
     </div>
   </div>
 </div>

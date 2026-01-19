@@ -1,16 +1,21 @@
 <header class="w-full">
 
-  <nav class="flex items-center justify-between bg-gray-800 text-white p-3">
+  <nav
+    class="flex items-center justify-between flex-wrap bg-gray-800 text-white p-3"
+  >
     <a class="p-2 hover:text-gray-300" href="/">
       <i data-feather="home"></i>
     </a>
     <span class="text-sm pl-2 text-gray-500">{{title}}</span>
 
-    <button class="md:hidden p-2 border border-gray-600 rounded">
+    <button id="menu-btn" class="md:hidden p-2 border border-gray-600 rounded">
       <i data-feather="menu"></i>
     </button>
 
-    <div class="hidden md:flex w-full items-center">
+    <div
+      id="menu-content"
+      class="hidden md:flex w-full md:w-auto flex-grow md:flex-row flex-col items-center mt-4 md:mt-0"
+    >
       <div class="flex-1 px-4 text-gray-300">
         {{#if breadcrumb}}
           <a
