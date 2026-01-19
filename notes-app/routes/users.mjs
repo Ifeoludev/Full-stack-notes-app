@@ -48,7 +48,7 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/", // SUCCESS: Go to home page
     failureRedirect: "login", // FAIL: Go to userlogin
-  })
+  }),
 );
 
 router.get("/auth/github", passport.authenticate("github"));
@@ -58,7 +58,7 @@ router.get(
   passport.authenticate("github", { failureRedirect: "/users/login" }),
   function (req, res) {
     res.redirect("/");
-  }
+  },
 );
 
 router.get("/logout", function (req, res, next) {
@@ -90,7 +90,7 @@ passport.use(
     } catch (e) {
       done(e);
     }
-  })
+  }),
 );
 
 passport.use(
@@ -98,7 +98,9 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/users/auth/github/callback",
+      callbackURL:
+        process.env.GITHUB_CALLBACK_URL ||
+        "http://localhost:3000/users/auth/github/callback",
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
@@ -117,8 +119,8 @@ passport.use(
       } catch (err) {
         done(err);
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser(function (user, done) {
