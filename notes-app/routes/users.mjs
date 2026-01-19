@@ -103,6 +103,9 @@ passport.use(
         "http://localhost:3000/users/auth/github/callback",
     },
     async function (accessToken, refreshToken, profile, done) {
+      console.log("OAuth Config Check:");
+      console.log("ClientID:", process.env.GITHUB_CLIENT_ID);
+      console.log("CallbackURL:", process.env.GITHUB_CALLBACK_URL);
       try {
         var user = await usersModel.findOrCreate({
           id: profile.username,
