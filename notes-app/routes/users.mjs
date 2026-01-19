@@ -101,6 +101,7 @@ passport.use(
       callbackURL:
         process.env.GITHUB_CALLBACK_URL ||
         "http://localhost:3000/users/auth/github/callback",
+      userAgent: "notes-app",
     },
     async function (accessToken, refreshToken, profile, done) {
       console.log("OAuth Config Check:");
