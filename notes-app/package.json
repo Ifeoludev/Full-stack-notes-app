@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env DEBUG=notes-app:* USER_SERVICE_URL=http://localhost:3333 node ./app.mjs",
+    "start": "cross-env DEBUG=notes:* USER_SERVICE_URL=http://localhost:3333 node ./app.mjs",
+    "start-memory": "cross-env DEBUG=notes:* NOTES_MODEL=memory USER_SERVICE_URL=http://localhost:3333 node ./app.mjs",
     "start-fs": "cross-env DEBUG=notes:* NOTES_MODEL=fs USER_SERVICE_URL=http://localhost:3333 node ./app.mjs",
     "start-level": "cross-env DEBUG=notes:* NOTES_MODEL=level SEQUELIZE_CONNECT=sequelize.yaml USER_SERVICE_URL=http://localhost:3333 node ./app.mjs",
     "sqlite3-setup": "node ./scripts/init-sqlite3.mjs",
