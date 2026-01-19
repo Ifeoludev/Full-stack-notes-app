@@ -36,6 +36,7 @@ import { Server } from "socket.io";
 import passportSocketIo from "passport.socketio";
 
 const app = express();
+app.enable("trust proxy");
 export default app;
 
 const server = http.createServer(app);
@@ -54,7 +55,7 @@ io.use(
     store: sessionStore,
     success: onAuthorizeSuccess,
     fail: onAuthorizeFail,
-  })
+  }),
 );
 
 function onAuthorizeSuccess(data, accept) {
@@ -95,7 +96,7 @@ if (process.env.REQUEST_LOG_FILE) {
 app.use(
   logger(process.env.REQUEST_LOG_FORMAT || "dev", {
     stream: logStream ? logStream : process.stdout,
-  })
+  }),
 );
 
 app.use(express.json());
@@ -110,7 +111,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     name: sessionCookieName,
-  })
+  }),
 );
 initPassport(app);
 
